@@ -1,5 +1,7 @@
 from Products.Archetypes.Widget import TypesWidget
 
+from AccessControl import ClassSecurityInfo
+
 
 class MultiTreeWidget(TypesWidget):
     _properties = TypesWidget._properties.copy()
