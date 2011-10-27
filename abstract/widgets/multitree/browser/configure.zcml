@@ -1,9 +1,0 @@
-<configure
-    xmlns="http://namespaces.zope.org/browser"
-    xmlns:zope="http://namespaces.zope.org/zope"
-    xmlns:zcml="http://namespaces.zope.org/zcml"
-    i18n_domain="abstract.widgets.multitree">
-
-
-
-</configure>
