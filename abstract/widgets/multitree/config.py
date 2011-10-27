@@ -1,0 +1,1 @@
+PROJECTNAME = "abstract.widgets.multitree"
