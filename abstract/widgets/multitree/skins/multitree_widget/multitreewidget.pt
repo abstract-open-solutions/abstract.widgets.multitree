@@ -6,18 +6,51 @@
 
   <body>
 
-    <metal:view_macro define-macro="view">
-        value
-    </metal:view_macro>
+    <metal:view_macro define-macro="view"
+                      tal:define="vocab python:field.Vocabulary(here);
+                                  value python:accessor();
+                                  display python:context.displayValue(vocab, value);"
+                      tal:replace="structure display" />
 
     <metal:edit_macro define-macro="edit">
-        <input type="text" name="pippo"  value=""/>
+      <metal:use use-macro="field_macro | context/widgets/field/macros/edit">
+        <metal:fill fill-slot="widget_body"
+                    tal:define="vocab python:field.Vocabulary(here);">
+
+          <script type="text/javascript" 
+                  tal:define="rows python:['{id:%s,name:\'%s\'}'%(item,vocab.getValue(item)) for item in value ];
+                              single_line python:'[%s]'%','.join(rows);"
+                  tal:content="string:input_name='#$fieldName'; prePopulate=$single_line">
+          </script>
+
+          <script type="text/javascript">
+            $(document).ready(function () {          
+              jq(input_name).tokenInput("/test/multitree_json_view",{
+                prePopulate:prePopulate
+              });
+
+            });
+          </script>
+
+          <input type="text"
+                tal:attributes="name fieldName;
+                                id fieldName;" />
+        </metal:fill>
+      </metal:use>
     </metal:edit_macro>
 
-    <metal:search_macro define-macro="search">
-        value searched
-    </metal:search_macro>
+    <div metal:define-macro="search">
+      <div metal:use-macro="context/widgets/multitreewidget/macros/edit">
+      </div>
+    </div>
 
+    <div metal:define-macro="hidden">
+      <input type="hidden"
+             name=""
+             value=""
+             tal:attributes="name string:${fieldName}:lines;
+                             value python:'\n'.join(value);" />
+    </div>
   </body>
 
 </html>

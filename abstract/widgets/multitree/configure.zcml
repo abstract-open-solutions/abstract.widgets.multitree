@@ -2,10 +2,13 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:five="http://namespaces.zope.org/five"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:cmf="http://namespaces.zope.org/cmf"
+    xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="abstract.widgets.multitree">
 
   <five:registerPackage package="." initialize=".initialize" />
 
+  <cmf:registerDirectory name="multitree_widget"/>
 
   <genericsetup:registerProfile
     name="default"
@@ -13,6 +16,13 @@
     directory="profiles/default"
     description="Abstract Multitree Widget Product"
     provides="Products.GenericSetup.interfaces.EXTENSION"
+  />
+
+  <browser:page
+    name="multitree_json_view"
+    for="*"
+    class=".browser.MultiTreeJSONView"
+    permission="zope2.View"
   />
 
 
