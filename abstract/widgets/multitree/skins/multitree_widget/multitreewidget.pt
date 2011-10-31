@@ -20,8 +20,8 @@
           <script type="text/javascript" 
                   tal:define="rows python:['{id:%s,name:\'%s\'}'%(item,vocab.getValue(item)) for item in value ];
                               single_line python:'[%s]'%','.join(rows);
-                              json_url string:${context/absolute_url}/multitree_json_view"
-                  tal:content="string:input_name='#$fieldName'; prePopulate=$single_line; json_url='$json_url'">
+                              json_url string:${context/absolute_url}/multitree_json_view;"
+                  tal:content="string:input_name='#$fieldName'; prePopulate=$single_line; json_url='$json_url?field_name=$fieldName'">
           </script>
 
           <script type="text/javascript">
