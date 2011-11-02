@@ -37,10 +37,9 @@ class MultiTreeJSONView(BrowserView):
         result_list=[]
         
         qry=self.request.get('id','')
-        import pdb; pdb.set_trace()
         source=self._get_source()
         if source is not None:
-            result_list=[dict(id=row['id'],name=row['full_label']) for row in source.get_children(qry)]
+            result_list=[dict(data=row['label'],state='closed',attr={'id':row['id'],}) for row in source.get_children(qry)]
 
 
         return json.dumps(result_list)

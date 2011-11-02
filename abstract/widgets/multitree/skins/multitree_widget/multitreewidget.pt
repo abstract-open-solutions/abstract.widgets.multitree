@@ -32,7 +32,8 @@
                               single_line python:'[%s]'%','.join(rows);
                               ti_json_url string:${context/absolute_url}/multitree_plain_subtree_json_view;
                               jt_json_url string:${context/absolute_url}/multitree_structured_subtree_json_view;"
-                  tal:content="string:input_name='#$fieldName'; 
+                  tal:content="string:input_name='#$fieldName';
+                                      postfix_name='$fieldName';
                                       prePopulate=$single_line; 
                                       ti_json_url='$ti_json_url?field_name=$fieldName'; 
                                       jt_json_url='$jt_json_url?field_name=$fieldName';">
@@ -46,7 +47,8 @@
               });
 
               //JSTree
-              jq("#popup").jstree({
+              popup=jq("#popup")
+              popup.jstree({
                 "json_data" : {
                   "ajax" : {
                     "url" : jt_json_url,
@@ -55,8 +57,19 @@
                     }
                   }
                 },
-              "plugins" : [ "themes", "json_data", ]
+                "ui": {
+                  "select_limit":10
+                },
+                "plugins" : [ "themes", "ui", "json_data", ]
               });
+          
+              jq("#select_node_"+postfix_name).click(function (){
+                selected_node=popup.jstree("get_selected")
+                id=selected_node.attr('id')
+                label=popup.jstree('get_text',selected_node)
+                alert(id+" "+label);
+              });
+
             });
           </script>
 
@@ -68,9 +81,17 @@
                  value="Show tree"
                  tal:attributes="name string:show_tree_$fieldName;
                                  id string:show_tree_$fieldName;"/>
+
           <div name="popup" id="popup">
             visibile
           </div>
+
+          <input type="button"
+                 value="Select"
+                 tal:attributes="name string:select_node_$fieldName;
+                                 id string:select_node_$fieldName;"/>
+
+
         </metal:fill>
       </metal:use>
     </metal:edit_macro>
