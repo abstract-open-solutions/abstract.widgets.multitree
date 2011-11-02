@@ -9,7 +9,8 @@ class MultiTreeWidget(TypesWidget):
     _properties.update({
         'macro' : "multitreewidget",
         'size'  : 5,
-        'helper_js': ('jquery.tokeninput.js',),
+        'helper_js': ('jquery.tokeninput.js','jquery.jstree.js'),
+        'source': None,
         })
 
     security = ClassSecurityInfo()
