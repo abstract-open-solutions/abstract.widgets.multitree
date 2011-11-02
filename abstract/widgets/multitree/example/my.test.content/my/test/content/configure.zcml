@@ -1,0 +1,27 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="my.test.content">
+
+  <five:registerPackage package="." initialize=".initialize" />
+
+  <five:deprecatedManageAddDelete
+      class=".testcontent.ATTestContent" />
+
+  <genericsetup:registerProfile
+    name="default"
+    title="Test Contents"
+    directory="profiles/default"
+    description="Cip Test Contents"
+    provides="Products.GenericSetup.interfaces.EXTENSION"
+  />
+
+  <adapter
+    for="my.test.content.interfaces.IATTestContent"
+    provides="abstract.widgets.multitree.interfaces.ISources"
+    factory="my.test.content.adapters.Sources"
+    />
+
+
+</configure>
