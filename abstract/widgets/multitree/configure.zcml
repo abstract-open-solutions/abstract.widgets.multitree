@@ -42,4 +42,12 @@
     permission="zope2.View"
   />
 
+  <browser:page
+    name="get_info_view"
+    for="*"
+    class=".browser.MultiTreeJSONView"
+    attribute="get_info"
+    permission="zope2.View"
+  />
+
 </configure>

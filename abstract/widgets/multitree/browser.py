@@ -9,7 +9,7 @@ class MultiTreeJSONView(BrowserView):
     def _get_source(self,fieldName=''):
         source=None
         sources=ISources(self.context)
-        
+
         fieldName=self.request.get('field_name',fieldName)
         if len(fieldName)>0:
             schema=self.context.Schema()
@@ -31,11 +31,11 @@ class MultiTreeJSONView(BrowserView):
             result_list=[dict(id=row['id'],name=row['full_label']) for row in source.search(qry)]
 
         return json.dumps(result_list)
-        
+
     def structured_subtree(self):
         self.request.response.setHeader("Content-type","application/json")
         result_list=[]
-        
+
         qry=self.request.get('id','')
         source=self._get_source()
         if source is not None:
@@ -51,4 +51,19 @@ class MultiTreeJSONView(BrowserView):
             for id in values:
                 result_list.append(source.get_info(id))
         return result_list
-        
+
+    def get_info(self):
+        self.request.response.setHeader("Content-type","application/json")
+        result_obj=[]
+        source=self._get_source()
+        if source is not None:
+            id=self.request.get('id',None)
+            if id is not None:
+                result_obj=source.get_info(id)
+
+        dest=self.request.get('destination_id',None)
+        if dest is not None:
+            result_obj['destination']=dest
+        return json.dumps(result_obj)
+
+
