@@ -61,9 +61,6 @@ class MultiTreeJSONView(BrowserView):
             if id is not None:
                 result_obj=source.get_info(id)
 
-        dest=self.request.get('destination_id',None)
-        if dest is not None:
-            result_obj['destination']=dest
         return json.dumps(result_obj)
 
 

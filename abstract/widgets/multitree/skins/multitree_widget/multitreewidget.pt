@@ -24,8 +24,9 @@
       <metal:use use-macro="field_macro | context/widgets/field/macros/edit">
         <metal:fill fill-slot="widget_body"
                     tal:define="value python:accessor();
-                                  convert_values nocall:context/@@convert_values_view;
-                                  converted python:convert_values(fieldName,value)">
+                                var_prefix string:mtw_${fieldName}_;
+                                convert_values nocall:context/@@convert_values_view;
+                                converted python:convert_values(fieldName,value)">
 
           <script type="text/javascript" 
                   tal:define="rows python:['{id:%s,name:\'%s\'}'%(item['id'],item['full_label']) for item in converted ];
@@ -33,12 +34,12 @@
                               ti_json_url string:${context/absolute_url}/multitree_plain_subtree_json_view;
                               jt_json_url string:${context/absolute_url}/multitree_structured_subtree_json_view;
                               info_url string:${context/absolute_url}/get_info_view;"
-                  tal:content="string:input_name='$fieldName';
-                                      postfix_name='$fieldName';
-                                      prePopulate=$single_line;
-                                      ti_json_url='$ti_json_url?field_name=$fieldName'; 
-                                      jt_json_url='$jt_json_url?field_name=$fieldName';
-                                      info_url='$info_url?field_name=$fieldName';">
+                  tal:content="string:var input_name='$fieldName';
+                                      var var_prefix='$var_prefix';
+                                      var prePopulate=$single_line;
+                                      var ti_json_url='$ti_json_url?field_name=$fieldName'; 
+                                      var jt_json_url='$jt_json_url?field_name=$fieldName';
+                                      var info_url='$info_url?field_name=$fieldName';">
           </script>
 
           <script type="text/javascript">
@@ -49,7 +50,7 @@
               });
 
               //JSTree
-              var popup=jq("#popup")
+              var popup=jq("#"+var_prefix+"popup")
   
               //JSTree: get first level
               popup.jstree({
@@ -68,25 +69,24 @@
               });
           
               //JSTree: popup open
-              jq('#show_tree_button').overlay({
+              jq('#'+var_prefix+'show_tree_button').overlay({
                 color: '#ccc',
                 closeOnClick: false
               });
 
               //JSTree: assign select action
-              jq("#select_node_"+postfix_name).click(function (){
+              jq("#"+var_prefix+"select_node").click(function (){
                 selected_node=popup.jstree("get_selected")
                 id=selected_node.attr('id')
                 if (id !=null ) {
                   label=popup.jstree('get_text',selected_node)
-                  query_url=info_url+'&id='+id+'&destination_id='+input_name
+                  query_url=info_url+'&id='+id
     
                   //get from remote details
                   jq.get(query_url,function (data){
                     id=data['id']
                     name=data['full_label'];
-                    input_name=data['destination']
-                    
+
                     //update input value 
                     jq('#'+input_name).tokenInput("add", {id: id, name: name});
                   });
@@ -100,21 +100,26 @@
                  tal:attributes="name fieldName;
                                  id fieldName;" />
 
-          <a href="" rel="#hidden_box" name="show_tree_button" id="show_tree_button">Show tree</a>
+          <a href="" 
+             rel="#hidden_box" 
+             tal:attributes="rel string:#${var_prefix}hidden_box;
+                             id string:${var_prefix}show_tree_button;
+                             name string:${var_prefix}show_tree_button;">Show tree</a>
 
-          <div name="hidden_box" id="hidden_box" class="overlay overlay-ajax" style="width:300px; border:">
+          <div class="overlay overlay-ajax"
+               tal:attributes="id string:${var_prefix}hidden_box;
+                               name string:${var_prefix}hidden_box;">
             <div class="close"><span>Close</span></div>
-            <div name="popup" id="popup">
+            <div tal:attributes="id string:${var_prefix}popup;
+                                 name string:${var_prefix}popup;">
             </div>
 
             <input type="button"
-                  value="Select"
-                  tal:attributes="name string:select_node_$fieldName;
-                                  id string:select_node_$fieldName;"/>
+                   value="Select"
+                   tal:attributes="id string:${var_prefix}select_node;
+                                   name string:${var_prefix}select_node;"/>
             <button type="button" class="close">Close</button>
           </div>
-
-
         </metal:fill>
       </metal:use>
     </metal:edit_macro>
