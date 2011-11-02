@@ -4,38 +4,73 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="abstract.widgets.multitree">
 
+
+<!--vocab python:field.Vocabulary(here);
+                                  
+                                  display python:context.displayValue(vocab, value);-->
   <body>
 
     <metal:view_macro define-macro="view"
-                      tal:define="vocab python:field.Vocabulary(here);
-                                  value python:accessor();
-                                  display python:context.displayValue(vocab, value);"
-                      tal:replace="structure display" />
+                      tal:define="value python:accessor();
+                                  convert_values nocall:context/@@convert_values_view;
+                                  converted python:convert_values(fieldName,value)">
+      <ul>
+        <li tal:repeat="label converted"
+            tal:content="label/full_label"/>
+      </ul>
+    </metal:view_macro>
 
     <metal:edit_macro define-macro="edit">
       <metal:use use-macro="field_macro | context/widgets/field/macros/edit">
         <metal:fill fill-slot="widget_body"
-                    tal:define="vocab python:field.Vocabulary(here);">
+                    tal:define="value python:accessor();
+                                  convert_values nocall:context/@@convert_values_view;
+                                  converted python:convert_values(fieldName,value)">
 
           <script type="text/javascript" 
-                  tal:define="rows python:['{id:%s,name:\'%s\'}'%(item,vocab.getValue(item)) for item in value ];
+                  tal:define="rows python:['{id:%s,name:\'%s\'}'%(item['id'],item['full_label']) for item in converted ];
                               single_line python:'[%s]'%','.join(rows);
-                              json_url string:${context/absolute_url}/multitree_json_view;"
-                  tal:content="string:input_name='#$fieldName'; prePopulate=$single_line; json_url='$json_url?field_name=$fieldName'">
+                              ti_json_url string:${context/absolute_url}/multitree_plain_subtree_json_view;
+                              jt_json_url string:${context/absolute_url}/multitree_structured_subtree_json_view;"
+                  tal:content="string:input_name='#$fieldName'; 
+                                      prePopulate=$single_line; 
+                                      ti_json_url='$ti_json_url?field_name=$fieldName'; 
+                                      jt_json_url='$jt_json_url?field_name=$fieldName';">
           </script>
 
           <script type="text/javascript">
-            $(document).ready(function () {          
-              jq(input_name).tokenInput(json_url,{
+            jq(document).ready(function () {
+              //TokenInput 
+              jq(input_name).tokenInput(ti_json_url,{
                 prePopulate:prePopulate
               });
 
+              //JSTree
+              jq("#popup").jstree({
+                "json_data" : {
+                  "ajax" : {
+                    "url" : jt_json_url,
+                    "data" : function (n) {
+                      return { id : n.attr ? n.attr("id") : 0 };
+                    }
+                  }
+                },
+              "plugins" : [ "themes", "json_data", ]
+              });
             });
           </script>
 
           <input type="text"
-                tal:attributes="name fieldName;
-                                id fieldName;" />
+                 tal:attributes="name fieldName;
+                                 id fieldName;" />
+
+          <input type="button" 
+                 value="Show tree"
+                 tal:attributes="name string:show_tree_$fieldName;
+                                 id string:show_tree_$fieldName;"/>
+          <div name="popup" id="popup">
+            visibile
+          </div>
         </metal:fill>
       </metal:use>
     </metal:edit_macro>

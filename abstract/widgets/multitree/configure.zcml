@@ -19,11 +19,27 @@
   />
 
   <browser:page
-    name="multitree_json_view"
+    name="multitree_plain_subtree_json_view"
     for="*"
     class=".browser.MultiTreeJSONView"
+    attribute="plain_subtree"
     permission="zope2.View"
   />
 
+  <browser:page
+    name="multitree_structured_subtree_json_view"
+    for="*"
+    class=".browser.MultiTreeJSONView"
+    attribute="structured_subtree"
+    permission="zope2.View"
+  />
+
+  <browser:page
+    name="convert_values_view"
+    for="*"
+    class=".browser.MultiTreeJSONView"
+    attribute="convert_values"
+    permission="zope2.View"
+  />
 
 </configure>
