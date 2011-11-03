@@ -6,7 +6,7 @@
 
 
 <!--vocab python:field.Vocabulary(here);
-                                  
+
                                   display python:context.displayValue(vocab, value);-->
   <body>
 
@@ -28,7 +28,7 @@
                                 convert_values nocall:context/@@convert_values_view;
                                 converted python:convert_values(fieldName,value)">
 
-          <script type="text/javascript" 
+          <script type="text/javascript"
                   tal:define="rows python:['{id:%s,name:\'%s\'}'%(item['id'],item['full_label']) for item in converted ];
                               single_line python:'[%s]'%','.join(rows);
                               ti_json_url string:${context/absolute_url}/multitree_plain_subtree_json_view;
@@ -37,21 +37,21 @@
                   tal:content="string:var input_name='$fieldName';
                                       var var_prefix='$var_prefix';
                                       var prePopulate=$single_line;
-                                      var ti_json_url='$ti_json_url?field_name=$fieldName'; 
+                                      var ti_json_url='$ti_json_url?field_name=$fieldName';
                                       var jt_json_url='$jt_json_url?field_name=$fieldName';
                                       var info_url='$info_url?field_name=$fieldName';">
           </script>
 
           <script type="text/javascript">
             jq(document).ready(function () {
-              //TokenInput 
+              //TokenInput
               jq('#'+input_name).tokenInput(ti_json_url,{
                 prePopulate:prePopulate
               });
 
               //JSTree
               var popup=jq("#"+var_prefix+"popup")
-  
+
               //JSTree: get first level
               popup.jstree({
                 "json_data" : {
@@ -67,7 +67,7 @@
                 },
                 "plugins" : [ "themes", "ui", "json_data", ]
               });
-          
+
               //JSTree: popup open
               jq('#'+var_prefix+'show_tree_button').overlay({
                 color: '#ccc',
@@ -81,13 +81,13 @@
                 if (id !=null ) {
                   label=popup.jstree('get_text',selected_node)
                   query_url=info_url+'&id='+id
-    
+
                   //get from remote details
                   jq.get(query_url,function (data){
                     id=data['id']
                     name=data['full_label'];
 
-                    //update input value 
+                    //update input value
                     jq('#'+input_name).tokenInput("add", {id: id, name: name});
                   });
                 }
@@ -99,26 +99,32 @@
           <input type="text"
                  tal:attributes="name fieldName;
                                  id fieldName;" />
+          <a href=""
+            rel="#hidden_box"
+            class="show_tree_button"
+            tal:attributes="rel string:#${var_prefix}hidden_box;
+                            id string:${var_prefix}show_tree_button;
+                            name string:${var_prefix}show_tree_button;">
+            <button type="button">Show tree</button></a>
 
-          <a href="" 
-             rel="#hidden_box" 
-             tal:attributes="rel string:#${var_prefix}hidden_box;
-                             id string:${var_prefix}show_tree_button;
-                             name string:${var_prefix}show_tree_button;">Show tree</a>
 
           <div class="overlay overlay-ajax"
                tal:attributes="id string:${var_prefix}hidden_box;
                                name string:${var_prefix}hidden_box;">
-            <div class="close"><span>Close</span></div>
-            <div tal:attributes="id string:${var_prefix}popup;
-                                 name string:${var_prefix}popup;">
-            </div>
+            <div class="close" rel="pippo"><span>Close</span></div>
+            <div class="pb-ajax">
+              <div tal:attributes="id string:${var_prefix}popup;
+                                  name string:${var_prefix}popup;">
+              </div>
 
-            <input type="button"
-                   value="Select"
-                   tal:attributes="id string:${var_prefix}select_node;
-                                   name string:${var_prefix}select_node;"/>
-            <button type="button" class="close">Close</button>
+              <div class="box_buttons">
+                <input type="button"
+                      value="Select"
+                      tal:attributes="id string:${var_prefix}select_node;
+                                      name string:${var_prefix}select_node;"/>
+                <button type="button" class="close">Close</button>
+              </div>
+            </div>
           </div>
         </metal:fill>
       </metal:use>

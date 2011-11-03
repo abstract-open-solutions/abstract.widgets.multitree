@@ -3,3 +3,12 @@ div.token-input-dropdown ul li {
 }
 
 
+.overlay .box_buttons {
+  text-align:right;
+}
+
+#content ul.token-input-list {
+  margin-left:0px;
+  border: 1px solid #000;
+}
+
