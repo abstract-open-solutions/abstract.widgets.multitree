@@ -4,10 +4,6 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="abstract.widgets.multitree">
 
-
-<!--vocab python:field.Vocabulary(here);
-
-                                  display python:context.displayValue(vocab, value);-->
   <body>
 
     <metal:view_macro define-macro="view"
@@ -26,7 +22,8 @@
                     tal:define="value python:accessor();
                                 var_prefix string:mtw_${fieldName}_;
                                 convert_values nocall:context/@@convert_values_view;
-                                converted python:convert_values(fieldName,value)">
+                                converted python:convert_values(fieldName,value);
+                                source_radio_name string:${var_prefix}source;">
 
           <script type="text/javascript"
                   tal:define="rows python:['{id:%s,name:\'%s\'}'%(item['id'],item['full_label']) for item in converted ];
@@ -37,16 +34,26 @@
                   tal:content="string:var input_name='$fieldName';
                                       var var_prefix='$var_prefix';
                                       var prePopulate=$single_line;
-                                      var ti_json_url='$ti_json_url?field_name=$fieldName';
-                                      var jt_json_url='$jt_json_url?field_name=$fieldName';
-                                      var info_url='$info_url?field_name=$fieldName';">
+                                      var ti_json_url='$ti_json_url?source_name=';
+                                      var jt_json_url='$jt_json_url?source_name=';
+                                      var info_url='$info_url?source_name=';
+                                      var source_radio_name='$source_radio_name';">
           </script>
 
           <script type="text/javascript">
             jq(document).ready(function () {
+              function get_source_val(){
+                  var radio=jq('input[name='+source_radio_name+']:checked');
+                  var source_name=radio.attr('value');
+                  return source_name;
+              }
+
               //TokenInput
-              jq('#'+input_name).tokenInput(ti_json_url,{
-                prePopulate:prePopulate
+              jq('#'+input_name).tokenInput(function (){
+                  return ti_json_url+get_source_val()
+                },
+                {
+                  prePopulate:prePopulate
               });
 
               //JSTree
@@ -56,14 +63,16 @@
               popup.jstree({
                 "json_data" : {
                   "ajax" : {
-                    "url" : jt_json_url,
+                    "url" : function () {
+                      return jt_json_url+get_source_val();
+                    },
                     "data" : function (n) {
                       return { id : n.attr ? n.attr("id") : 0 };
                     }
                   }
                 },
                 "ui": {
-                  "select_limit":10
+                  "select_limit":1
                 },
                 "plugins" : [ "themes", "ui", "json_data", ]
               });
@@ -71,7 +80,11 @@
               //JSTree: popup open
               jq('#'+var_prefix+'show_tree_button').overlay({
                 color: '#ccc',
-                closeOnClick: false
+                closeOnClick: false,
+                onBeforeLoad: function (){
+                  //before open the overlay, a refresh is necessary because
+                  popup.jstree('refresh')
+                }
               });
 
               //JSTree: assign select action
@@ -80,7 +93,7 @@
                 id=selected_node.attr('id')
                 if (id !=null ) {
                   label=popup.jstree('get_text',selected_node)
-                  query_url=info_url+'&id='+id
+                  query_url=info_url+get_source_val()+'&id='+id
 
                   //get from remote details
                   jq.get(query_url,function (data){
@@ -96,9 +109,29 @@
             });
           </script>
 
-          <input type="text"
-                 tal:attributes="name fieldName;
-                                 id fieldName;" />
+          <div>
+            Select source:
+            <ul class="sources_plain">
+              <li tal:repeat="source widget/sources">
+                <input type="radio"
+                       tal:define="is_first repeat/source/start;
+                                   idx repeat/source/index;"
+                       tal:attributes="id string:${source_radio_name}_${idx};
+                                       name source_radio_name;
+                                       value source;
+                                       checked python:is_first and 'checked' or ''"/>
+                <label tal:content="source"/>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            Select element:
+            <input type="text"
+                   tal:attributes="name fieldName;
+                                   id fieldName;" />
+          </div>
+
           <a href=""
             rel="#hidden_box"
             class="show_tree_button"

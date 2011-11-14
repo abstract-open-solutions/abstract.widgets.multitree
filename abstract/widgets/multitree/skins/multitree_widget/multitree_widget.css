@@ -12,3 +12,13 @@ div.token-input-dropdown ul li {
   border: 1px solid #000;
 }
 
+#content ul.sources_plain {
+  list-style: none;
+  margin-left:0px;
+
+}
+
+#content ul.sources_plain li, dl.portlet ul.sources_plain li {
+  display: inline;
+  margin-right:2em;
+}

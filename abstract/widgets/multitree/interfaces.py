@@ -19,10 +19,10 @@ class ISource(Interface):
         [
             { 'id': 'example_unique_id_1',
               'label': u'Item 2-1',
-              'full_label': u'Item 2 ‣ Item 2-1' },
+              'full_label': u'Item 2 > Item 2-1' },
             { 'id': 'example_unique_id_2',
               'label': u'Item 2-2',
-              'full_label': u'Item 2 ‣ Item 2-2' }
+              'full_label': u'Item 2 > Item 2-2' }
         ]
         """
 

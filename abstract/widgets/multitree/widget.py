@@ -10,7 +10,7 @@ class MultiTreeWidget(TypesWidget):
         'macro' : "multitreewidget",
         'size'  : 5,
         'helper_js': ('jquery.tokeninput.js','jquery.jstree.js'),
-        'source': None,
+        'sources': None,
         })
 
     security = ClassSecurityInfo()
