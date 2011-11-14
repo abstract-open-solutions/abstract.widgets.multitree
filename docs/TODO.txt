@@ -1,8 +1,0 @@
-* Show tree doesn't seem to work when you switch sources (using the builtin
-  example, if you switch to the second source)
-
-* When in tree, if you click "select" we should probably close down the
-  overlay, or atleast one should be able to configure the behaviour
-
-* Sometimes leaf elements are wrongly presented with a triangle: when you try
-  to open it, disappears
