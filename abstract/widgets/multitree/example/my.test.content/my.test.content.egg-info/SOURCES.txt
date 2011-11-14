@@ -11,6 +11,7 @@ my.test.content.egg-info/requires.txt
 my.test.content.egg-info/top_level.txt
 my/test/__init__.py
 my/test/content/__init__.py
+my/test/content/adapters.py
 my/test/content/interfaces.py
 my/test/content/testcontent.py
 my/test/content/tests.py

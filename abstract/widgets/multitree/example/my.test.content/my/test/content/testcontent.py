@@ -13,11 +13,12 @@ from abstract.widgets.multitree.widget import MultiTreeWidget
 from AccessControl import ClassSecurityInfo
 
 
-ATTestContentSchema = ATContentTypeSchema.copy() + Schema(( 
+ATTestContentSchema = ATContentTypeSchema.copy() + Schema((
     LinesField('myfield',
                 widget=MultiTreeWidget(
                 label=_(u'My Label'),
-                source='my.vocabolary.source')),
+                description=_(u'My long description My long description My long description My long description '),
+                sources=['my.vocabolary.source','my.vocabolary.source2'])),
 ))
 
 
