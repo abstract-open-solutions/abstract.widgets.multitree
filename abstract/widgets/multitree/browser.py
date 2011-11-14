@@ -16,6 +16,28 @@ class MultiTreeJSONView(BrowserView):
                 pass
         return source
 
+    def _get_sources_from_field(self,fieldName):
+        sources_available=[]
+        sources=ISources(self.context)
+        schema=self.context.Schema()
+        field=schema.get(fieldName)
+        widget = field.widget
+        for source in getattr(widget,'sources',[]):
+            try:
+                sources_available.append(sources.sources[source])
+            except KeyError:
+                continue
+        return sources_available
+
+    def _find_in_sources(self, id, sources):
+        found=None
+        for source in sources:
+            info=source.get_info(id)
+            if info.get('id',None)==id:
+                found=info
+                break
+        return found
+
     def plain_subtree(self):
         self.request.response.setHeader("Content-type","application/json")
         result_list=[]
@@ -34,12 +56,18 @@ class MultiTreeJSONView(BrowserView):
             result_list=[dict(data=row['label'],state='closed',attr={'id':row['id'],}) for row in source.get_children(qry)]
         return json.dumps(result_list)
 
+
     def convert_values(self,fieldName,values):
+        #from field get all sources
+        sources=self._get_sources_from_field(fieldName)
+
+        #for all value search a value in every source
         result_list=[]
-        source=self._get_source(self.request.get('source_name',''))
-        if source is not None:
-            for id in values:
-                result_list.append(source.get_info(id))
+        for value in values:
+            info=self._find_in_sources(value,sources)
+            if info is not None:
+                result_list.append(info)
+
         return result_list
 
     def get_info(self):
