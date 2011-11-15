@@ -18,7 +18,8 @@ ATTestContentSchema = ATContentTypeSchema.copy() + Schema((
                 widget=MultiTreeWidget(
                 label=_(u'My Label'),
                 description=_(u'My long description My long description My long description My long description '),
-                sources=['my.vocabolary.source','my.vocabolary.source2'])),
+                singleshot_overlay=True,
+                sources=[('my.vocabolary.source',_(u"Source1")),('my.vocabolary.source2',_(u"Source2"))])),
 ))
 
 

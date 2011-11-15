@@ -22,7 +22,7 @@ class MultiTreeJSONView(BrowserView):
         schema=self.context.Schema()
         field=schema.get(fieldName)
         widget = field.widget
-        for source in getattr(widget,'sources',[]):
+        for (source,source_label) in getattr(widget,'sources',[]):
             try:
                 sources_available.append(sources.sources[source])
             except KeyError:

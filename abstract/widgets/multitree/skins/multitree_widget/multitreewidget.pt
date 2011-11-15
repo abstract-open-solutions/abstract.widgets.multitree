@@ -26,7 +26,7 @@
                                 source_radio_name string:${var_prefix}source;">
 
           <script type="text/javascript"
-                  tal:define="rows python:['{id:%s,name:\'%s\'}'%(item['id'],item['full_label']) for item in converted ];
+                  tal:define="rows python:['{id:\'%s\',name:\'%s\'}'%(item['id'],item['full_label']) for item in converted ];
                               single_line python:'[%s]'%','.join(rows);
                               ti_json_url string:${context/absolute_url}/multitree_plain_subtree_json_view;
                               jt_json_url string:${context/absolute_url}/multitree_structured_subtree_json_view;
@@ -37,7 +37,8 @@
                                       var ti_json_url='$ti_json_url?source_name=';
                                       var jt_json_url='$jt_json_url?source_name=';
                                       var info_url='$info_url?source_name=';
-                                      var source_radio_name='$source_radio_name';">
+                                      var source_radio_name='$source_radio_name';
+                                      var autoclose='${widget/singleshot_overlay}'=='True';">
           </script>
 
           <script type="text/javascript">
@@ -104,6 +105,10 @@
                     jq('#'+input_name).tokenInput("add", {id: id, name: name});
                   });
                 }
+                if (autoclose){
+                  overlay_obj=jq('#'+var_prefix+'show_tree_button').overlay()
+                  overlay_obj.close()
+                }
               });
 
             });
@@ -118,9 +123,9 @@
                                    idx repeat/source/index;"
                        tal:attributes="id string:${source_radio_name}_${idx};
                                        name source_radio_name;
-                                       value source;
+                                       value python:source[0];
                                        checked python:is_first and 'checked' or ''"/>
-                <label tal:content="source"/>
+                <label tal:content="python:source[1]"/>
               </li>
             </ul>
           </div>

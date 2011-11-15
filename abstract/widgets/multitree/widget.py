@@ -10,6 +10,7 @@ class MultiTreeWidget(TypesWidget):
         'macro' : "multitreewidget",
         'size'  : 5,
         'helper_js': ('jquery.tokeninput.js','jquery.jstree.js'),
+        'singleshot_overlay': False,
         'sources': None,
         })
 
