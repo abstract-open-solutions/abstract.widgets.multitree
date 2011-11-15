@@ -1,5 +1,5 @@
 from Products.Five import BrowserView
-import simplejson as json
+import json
 
 from abstract.widgets.multitree.widget import MultiTreeWidget
 from abstract.widgets.multitree.interfaces import ISources
@@ -53,9 +53,12 @@ class MultiTreeJSONView(BrowserView):
         qry=self.request.get('id','')
         source=self._get_source(self.request.get('source_name',''))
         if source is not None:
-            result_list=[dict(data=row['label'],state='closed',attr={'id':row['id'],}) for row in source.get_children(qry)]
+            for row in source.get_children(qry):
+                child_desc=dict(data=row['label'],attr={'id':row['id'],})
+                if len(source.get_children(row['id'])):
+                    child_desc['state']='closed'
+                result_list.append(child_desc)
         return json.dumps(result_list)
-
 
     def convert_values(self,fieldName,values):
         #from field get all sources
